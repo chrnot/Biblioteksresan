@@ -17,7 +17,9 @@ import {
   Library,
   Info
 } from 'lucide-react';
+
 import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { 
@@ -69,17 +71,24 @@ export default function App() {
     return (checkedCount / 16) * 100;
   };
 
-  const downloadJPG = async () => {
+  const downloadPDF = async () => {
     if (exportRef.current) {
       const canvas = await html2canvas(exportRef.current, {
         scale: 2,
         backgroundColor: '#f8fafc',
         logging: false,
+        useCORS: true
       });
-      const link = document.createElement('a');
-      link.download = `biblioteksresan-${schoolName || 'skola'}.jpg`;
-      link.href = canvas.toDataURL('image/jpeg', 0.9);
-      link.click();
+      
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`biblioteksresan-${schoolName || 'skola'}.pdf`);
     }
   };
 
@@ -332,12 +341,12 @@ export default function App() {
         {!role && !activePillar && (
           <section className="mt-20">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold tracking-tight">Bibliotekets Profil</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Skolbibliotekets nuläge</h2>
               <button 
-                onClick={downloadJPG}
+                onClick={downloadPDF}
                 className="flex items-center gap-2 bg-white border border-slate-200 rounded-full px-6 py-2.5 text-sm font-bold shadow-sm hover:shadow-md transition-all active:scale-95"
               >
-                <Download className="w-4 h-4" /> Exportera JPG
+                <Download className="w-4 h-4" /> Exportera PDF
               </button>
             </div>
 
@@ -353,7 +362,7 @@ export default function App() {
               <div className="relative z-10">
                 <div className="text-center mb-12">
                   <h3 className="text-3xl font-black mb-2" style={{ color: '#0f172a' }}>
-                    {schoolName || 'Vår Skola'}
+                    {schoolName || 'Skolans namn - fyll i högst upp'}
                   </h3>
                   <p className="font-bold uppercase tracking-widest text-xs" style={{ color: '#4f46e5' }}>Biblioteksresan Status</p>
                 </div>
