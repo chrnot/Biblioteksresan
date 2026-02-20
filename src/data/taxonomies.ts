@@ -11,7 +11,7 @@ export const librarianLevels: TaxonomyLevel[] = [
   { level: 4, title: "Spontan samverkan", description: "Bibliotekarien hjälper klasser eller grupper som dyker upp utan förvarning." },
   { level: 5, title: "Informell planering", description: "Korta möten i korridorer eller personalrum där bibliotekarien ger tips på material." },
   { level: 6, title: "Planerad insamling", description: "Läraren ber i förväg bibliotekarien att plocka fram material till ett specifikt projekt." },
-  { level: 7, title: "Marknadsföring", description: "Bibliotekarien arbetar aktivt med t.ex. bokprat för att engagera personal och elever." },
+  { level: 7, title: "Läsfrämjande", description: "Bibliotekarien arbetar aktivt med t.ex. bokprat för att engagera personal och elever." },
   { level: 8, title: "Formell planering i stödroll", description: "Bibliotekarien deltar i planering men endast som serviceperson; läraren styr helt innehållet." },
   { level: 9, title: "Pedagogisk design I", description: "Bibliotekarien planerar, genomför och utvärderar delar av undervisningen tillsammans med läraren." },
   { level: 10, title: "Pedagogisk design II", description: "Biblioteket är kärnan i undervisningen; informationssökning är helt integrerad i ämnet." },
