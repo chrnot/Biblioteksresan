@@ -33,7 +33,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 type Role = 'librarian' | 'teacher' | 'principal';
-type PillarId = 'collaboration' | 'reading' | 'tech' | 'info';
+type PillarId = 'collaboration' | 'mik' | 'language' | 'democracy';
 
 export default function App() {
   const [role, setRole] = useState<Role | null>(null);
@@ -45,9 +45,9 @@ export default function App() {
   });
   const [bingoStates, setBingoStates] = useState<Record<PillarId, boolean[]>>({
     collaboration: new Array(16).fill(false),
-    reading: new Array(16).fill(false),
-    tech: new Array(16).fill(false),
-    info: new Array(16).fill(false)
+    mik: new Array(16).fill(false),
+    language: new Array(16).fill(false),
+    democracy: new Array(16).fill(false)
   });
   const [schoolName, setSchoolName] = useState('');
   const exportRef = useRef<HTMLDivElement>(null);
@@ -301,7 +301,6 @@ export default function App() {
                       )}>
                         {pillar.title}
                       </h4>
-                      <span className="text-xs font-bold text-slate-400">{Math.round(getPillarProgress(pillar.id as PillarId))}%</span>
                     </div>
                     <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <motion.div 
@@ -369,10 +368,13 @@ export default function App() {
                     {fourPillars.map((p) => (
                       <div key={p.id} className="text-center">
                         <div className={cn(
-                          "text-xl font-black mb-1",
-                          getPillarProgress(p.id as PillarId) > 0 ? "text-emerald-600" : "text-slate-300"
+                          "w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-2",
+                          getPillarProgress(p.id as PillarId) > 0 ? "opacity-100" : "opacity-30"
                         )}>
-                          {Math.round(getPillarProgress(p.id as PillarId))}%
+                          <div 
+                            className="h-full bg-emerald-500" 
+                            style={{ width: `${getPillarProgress(p.id as PillarId)}%` }}
+                          />
                         </div>
                         <div className="text-[10px] font-bold text-slate-400 uppercase">{p.title}</div>
                       </div>

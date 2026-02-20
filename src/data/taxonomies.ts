@@ -53,36 +53,36 @@ export const fourPillars = [
     ]
   },
   { 
-    id: "reading", 
-    title: "Läsning", 
-    question: "Finns det ett brett utbud av litteratur som väcker läslust?",
+    id: "mik", 
+    title: "MIK", 
+    question: "Undervisas eleverna systematiskt i medie- och informationskunnighet?",
     bingoItems: [
-      "Bokprat för alla årskurser", "Aktuellt bokbestånd", "Läsutmaningar/aktiviteter", "Lockande skyltning",
-      "E-böcker/ljudböcker finns", "Samarbete med hemmet", "Läsande förebilder (vuxna)", "Tid för fri läsning",
-      "Känner elevernas läsnivåer", "Mångfald i utbudet", "Elevinflytande vid inköp", "Inbjudande miljö",
-      "Litteratur på modersmål", "Författarbesök/events", "Boksamtal i grupper", "Öppet hela skoldagen"
+      "Källkritik i digitala miljöer", "Förståelse för algoritmer", "AI-läskunnighet", "Upphovsrätt & CC",
+      "Digitalt skapande", "Värdera olika källor", "Integritet på nätet", "Reklam- & medieanalys",
+      "Informationssökning", "Källkritik av bild/video", "Förstå filterbubblor", "Hantera desinformation",
+      "Digital säkerhet", "Källhänvisning", "Medieproduktion", "Kritiskt tänkande"
     ]
   },
   { 
-    id: "tech", 
-    title: "Teknikstött lärande", 
-    question: "Fungerar biblioteket som ett nav för digital kompetens och IT?",
+    id: "language", 
+    title: "Språkutveckling", 
+    question: "Stödjer biblioteket elevernas språkliga och litterära utveckling?",
     bingoItems: [
-      "Nav för digital kompetens", "Hjälp med digitala verktyg", "Tillgång till databaser", "Makerspace/skapande",
-      "Stöd i lärplattformar", "Källkritik på nätet", "Digitalt skapande (podd/film)", "Tekniskt kunnig personal",
-      "Låneutrustning (kamera/VR)", "Digitalt mediebestånd", "Utbildning i upphovsrätt", "Stöd för Legimus/MTM",
-      "Bra webbplats/blogg", "Ansvarsfull AI-användning", "Fungerande Wi-Fi", "Digitala infoskärmar"
+      "Läsfrämjande insatser", "Ordförrådsutveckling", "Boksamtal i grupp", "Skrivande i genrer",
+      "Berättande (storytelling)", "Modersmålsstöd", "Litteratur på olika språk", "Högläsning",
+      "Lässtrategier", "Multimodalitet (bild/text)", "Genremedvetenhet", "Språklig medvetenhet",
+      "Lustfyllt läsande", "Skönlitteratur i ämnen", "Poesi och dramatik", "Digitalt berättande"
     ]
   },
   { 
-    id: "info", 
-    title: "Informationskompetens", 
-    question: "Undervisas eleverna systematiskt i källkritik och sökstrategier?",
+    id: "democracy", 
+    title: "Demokrati", 
+    question: "Fungerar biblioteket som en demokratisk arena för alla elever?",
     bingoItems: [
-      "Systematisk källkritik", "Sökstrategier i alla år", "Värdera olika källor", "Referenshantering",
-      "Upphovsrätt i undervisning", "Förståelse för algoritmer", "Källkritik i sociala medier", "Fakta vs Åsikt",
-      "Analoga & digitala källor", "Formulera sökfrågor", "Förstå informationsflöden", "Kritiskt tänkande i alla ämnen",
-      "Lektioner i sökning", "Samarbete kring uppgifter", "Verktyg för källkritik", "Ansvarsfull produktion"
+      "Elevinflytande i bibblan", "Samtal om svåra frågor", "Yttrandefrihet & censur", "Inkludering & mångfald",
+      "Delaktighet i inköp", "Biblioteket som mötesplats", "Kritiskt granskande av makt", "Mänskliga rättigheter",
+      "Demokratiska processer", "Trygg miljö för alla", "Representation i hyllan", "Medborgarfostran",
+      "Etiska diskussioner", "Tillgång till fri info", "Globala målen i bibblan", "Elevrådssamarbete"
     ]
   },
 ];
