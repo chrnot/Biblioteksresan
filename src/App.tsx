@@ -233,9 +233,21 @@ export default function App() {
                         <h2 className="text-2xl font-bold mb-1">{pillar.title} – Bingo</h2>
                         <p className="text-emerald-100 opacity-90">{pillar.question}</p>
                       </div>
-                      <div className="text-right">
-                        <div className="text-3xl font-black">{Math.round(getPillarProgress(activePillar))}%</div>
-                        <div className="text-[10px] uppercase tracking-widest font-bold opacity-70">Uppnått</div>
+                      <div className="flex flex-col items-end gap-2">
+                        <div className="w-48 h-3 bg-emerald-800 rounded-full relative overflow-hidden border border-emerald-700">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${getPillarProgress(activePillar)}%` }}
+                            className="h-full bg-white"
+                          />
+                          {/* Markers for quarters */}
+                          <div className="absolute inset-0 flex justify-evenly pointer-events-none">
+                            <div className="w-px h-full bg-emerald-900/30" />
+                            <div className="w-px h-full bg-emerald-900/30" />
+                            <div className="w-px h-full bg-emerald-900/30" />
+                          </div>
+                        </div>
+                        <div className="text-[10px] uppercase tracking-widest font-bold opacity-70">Framsteg (fjärdedelar)</div>
                       </div>
                     </div>
                   </div>
@@ -332,58 +344,66 @@ export default function App() {
             <div 
               ref={exportRef}
               className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 relative overflow-hidden"
+              style={{ backgroundColor: '#ffffff', color: '#0f172a' }}
             >
               {/* Background Decorative Elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 opacity-50" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-50 rounded-full -ml-24 -mb-24 opacity-50" />
+              <div className="absolute top-0 right-0 w-64 h-64 rounded-full -mr-32 -mt-32 opacity-50" style={{ backgroundColor: '#eef2ff' }} />
+              <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full -ml-24 -mb-24 opacity-50" style={{ backgroundColor: '#ecfdf5' }} />
 
               <div className="relative z-10">
                 <div className="text-center mb-12">
-                  <h3 className="text-3xl font-black text-slate-900 mb-2">
+                  <h3 className="text-3xl font-black mb-2" style={{ color: '#0f172a' }}>
                     {schoolName || 'Vår Skola'}
                   </h3>
-                  <p className="text-indigo-600 font-bold uppercase tracking-widest text-xs">Biblioteksresan Status</p>
+                  <p className="font-bold uppercase tracking-widest text-xs" style={{ color: '#4f46e5' }}>Biblioteksresan Status</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                   {(['librarian', 'teacher', 'principal'] as Role[]).map((r) => (
-                    <div key={r} className="bg-slate-50 p-6 rounded-3xl border border-slate-100 text-center">
-                      <div className="text-indigo-600 mb-3 flex justify-center">{getRoleIcon(r)}</div>
-                      <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">{getRoleTitle(r)}</h4>
-                      <div className="text-4xl font-black text-slate-900">Nivå {scores[r]}</div>
-                      <div className="mt-4 h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div key={r} className="p-6 rounded-3xl border text-center" style={{ backgroundColor: '#f8fafc', borderColor: '#f1f5f9' }}>
+                      <div className="mb-3 flex justify-center" style={{ color: '#4f46e5' }}>{getRoleIcon(r)}</div>
+                      <h4 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: '#64748b' }}>{getRoleTitle(r)}</h4>
+                      <div className="text-4xl font-black" style={{ color: '#0f172a' }}>Nivå {scores[r]}</div>
+                      <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#e2e8f0' }}>
                         <motion.div 
                           initial={{ width: 0 }}
                           animate={{ width: `${(scores[r] / (r === 'librarian' ? 11 : 8)) * 100}%` }}
-                          className="h-full bg-indigo-600"
+                          className="h-full"
+                          style={{ backgroundColor: '#4f46e5' }}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="border-t border-slate-100 pt-8">
-                  <h4 className="text-center text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Grundpelare (Bingo-framsteg)</h4>
+                <div className="border-t pt-8" style={{ borderTopColor: '#f1f5f9' }}>
+                  <h4 className="text-center text-sm font-bold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>Grundpelare (Bingo-framsteg)</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {fourPillars.map((p) => (
                       <div key={p.id} className="text-center">
-                        <div className={cn(
-                          "w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-2",
-                          getPillarProgress(p.id as PillarId) > 0 ? "opacity-100" : "opacity-30"
-                        )}>
+                        <div 
+                          className="w-full h-2 rounded-full overflow-hidden mb-2"
+                          style={{ 
+                            backgroundColor: '#f1f5f9',
+                            opacity: getPillarProgress(p.id as PillarId) > 0 ? 1 : 0.3 
+                          }}
+                        >
                           <div 
-                            className="h-full bg-emerald-500" 
-                            style={{ width: `${getPillarProgress(p.id as PillarId)}%` }}
+                            className="h-full" 
+                            style={{ 
+                              width: `${getPillarProgress(p.id as PillarId)}%`,
+                              backgroundColor: '#10b981'
+                            }}
                           />
                         </div>
-                        <div className="text-[10px] font-bold text-slate-400 uppercase">{p.title}</div>
+                        <div className="text-[10px] font-bold uppercase" style={{ color: '#94a3b8' }}>{p.title}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div className="mt-12 text-center">
-                  <div className="inline-flex items-center gap-2 text-[10px] text-slate-400 font-medium uppercase tracking-tighter">
+                  <div className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-tighter" style={{ color: '#94a3b8' }}>
                     <Info className="w-3 h-3" /> Baserat på David Loertschers taxonomier för skolbibliotek
                   </div>
                 </div>
