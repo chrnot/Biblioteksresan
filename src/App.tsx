@@ -33,7 +33,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 type Role = 'librarian' | 'teacher' | 'principal';
-type PillarId = 'collaboration' | 'mik' | 'language' | 'democracy';
+type PillarId = 'mik' | 'reading' | 'culture' | 'democracy';
 
 export default function App() {
   const [role, setRole] = useState<Role | null>(null);
@@ -44,9 +44,9 @@ export default function App() {
     principal: 0
   });
   const [bingoStates, setBingoStates] = useState<Record<PillarId, boolean[]>>({
-    collaboration: new Array(16).fill(false),
     mik: new Array(16).fill(false),
-    language: new Array(16).fill(false),
+    reading: new Array(16).fill(false),
+    culture: new Array(16).fill(false),
     democracy: new Array(16).fill(false)
   });
   const [schoolName, setSchoolName] = useState('');
@@ -118,7 +118,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900">Biblioteksresan</h1>
-              <p className="text-sm text-slate-500 font-medium">Gamification av skolbiblioteket</p>
+              <p className="text-sm text-slate-500 font-medium">Hur långt har vi kommit?</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function App() {
                   {getRoleIcon(r)}
                 </div>
                 <h3 className="text-xl font-bold">{getRoleTitle(r)}</h3>
-                <p className="text-sm text-slate-500">Skatta din nivå baserat på Loertschers taxonomi.</p>
+                <p className="text-sm text-slate-500">Baserat på Loertschers taxonomi.</p>
                 <div className="mt-4 flex items-center text-indigo-600 font-semibold text-sm">
                   Börja resan <ChevronRight className="w-4 h-4 ml-1" />
                 </div>
@@ -284,7 +284,7 @@ export default function App() {
               <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
                 <Trophy className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold tracking-tight">De fyra grundpelarna</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Skolbibliotekspraktiker</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -377,7 +377,7 @@ export default function App() {
                 </div>
 
                 <div className="border-t pt-8" style={{ borderTopColor: '#f1f5f9' }}>
-                  <h4 className="text-center text-sm font-bold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>Grundpelare (Bingo-framsteg)</h4>
+                  <h4 className="text-center text-sm font-bold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>Skolbibliotekspraktiker (Bingo-framsteg)</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {fourPillars.map((p) => (
                       <div key={p.id} className="text-center">

@@ -9,9 +9,9 @@ export const librarianLevels: TaxonomyLevel[] = [
   { level: 2, title: "Självbetjäningslager", description: "Biblioteket tillhandahåller material, men användarna får klara sig själva." },
   { level: 3, title: "Individuell referenshjälp", description: "Bibliotekarien hjälper elever och lärare att hitta specifikt material vid förfrågan." },
   { level: 4, title: "Spontan samverkan", description: "Bibliotekarien hjälper klasser eller grupper som dyker upp utan förvarning." },
-  { level: 5, title: "Informell planering", description: "Korta möten i korridorer eller personalrum där bibliotekarien ger tips på material." },
-  { level: 6, title: "Planerad insamling", description: "Läraren ber i förväg bibliotekarien att plocka fram material till ett specifikt projekt." },
-  { level: 7, title: "Läsfrämjande", description: "Bibliotekarien arbetar aktivt med t.ex. bokprat för att engagera personal och elever." },
+  { level: 5, title: "Informell planering", description: "Korta möten i korridorer eller personalrum där bibliotekarien ger tips på material eller tillgängliggör en lånetid i biblioteket." },
+  { level: 6, title: "Referenssamtal", description: "Läraren ber i förväg bibliotekarien att plocka fram material till ett specifikt projekt." },
+  { level: 7, title: "Läsfrämjande", description: "Bibliotekarien arbetar aktivt med t ex bokprat, bokattacker och utställningar" },
   { level: 8, title: "Formell planering i stödroll", description: "Bibliotekarien deltar i planering men endast som serviceperson; läraren styr helt innehållet." },
   { level: 9, title: "Pedagogisk design I", description: "Bibliotekarien planerar, genomför och utvärderar delar av undervisningen tillsammans med läraren." },
   { level: 10, title: "Pedagogisk design II", description: "Biblioteket är kärnan i undervisningen; informationssökning är helt integrerad i ämnet." },
@@ -42,19 +42,8 @@ export const principalLevels: TaxonomyLevel[] = [
 
 export const fourPillars = [
   { 
-    id: "collaboration", 
-    title: "Samarbete", 
-    question: "Planerar och undervisar personalen tillsammans?",
-    bingoItems: [
-      "Samplanerar med lärare", "Sambedömer elevuppgifter", "Deltar i arbetslagsmöten", "Gemensamma projekt",
-      "Bibliotekarien i klassrummet", "Lärare besöker bibblan med klass", "Gemensam digital planering", "Gemensam utvärdering",
-      "Tipsar om material till teman", "Lärare söker aktivt expertis", "Bibblan i lektionsplaneringen", "Källkritik i specifika ämnen",
-      "Gemensamma bokinköp", "Coachar lärare i sökning", "Skolledningen uppmuntrar", "Tid avsatt för samplanering"
-    ]
-  },
-  { 
     id: "mik", 
-    title: "MIK", 
+    title: "MIK & digital kompetens", 
     question: "Undervisas eleverna systematiskt i medie- och informationskunnighet?",
     bingoItems: [
       "Källkritik i digitala miljöer", "Förståelse för algoritmer", "AI-läskunnighet", "Upphovsrätt & CC",
@@ -64,8 +53,8 @@ export const fourPillars = [
     ]
   },
   { 
-    id: "language", 
-    title: "Språkutveckling", 
+    id: "reading", 
+    title: "Läsning & språkutveckling", 
     question: "Stödjer biblioteket elevernas språkliga och litterära utveckling?",
     bingoItems: [
       "Läsfrämjande insatser", "Ordförrådsutveckling", "Boksamtal i grupp", "Skrivande i genrer",
@@ -75,8 +64,19 @@ export const fourPillars = [
     ]
   },
   { 
+    id: "culture", 
+    title: "Litteratur & kultur", 
+    question: "Erbjuder biblioteket ett brett utbud av kultur och litteratur?",
+    bingoItems: [
+      "Bokprat & bokattacker", "Aktuellt bokbestånd", "Författarbesök", "Kulturella events",
+      "Skyltning & exponering", "Samarbete med kulturskola", "Film & media", "Konstutställningar",
+      "Elevinflytande vid inköp", "Mångfald i utbudet", "Litteraturkanon-diskussion", "Kulturarv & samtid",
+      "Skapande verksamhet", "Teater & drama", "Musik & ljud", "Globala perspektiv"
+    ]
+  },
+  { 
     id: "democracy", 
-    title: "Demokrati", 
+    title: "Demokrati & värdegrund", 
     question: "Fungerar biblioteket som en demokratisk arena för alla elever?",
     bingoItems: [
       "Elevinflytande i bibblan", "Samtal om svåra frågor", "Yttrandefrihet & censur", "Inkludering & mångfald",
