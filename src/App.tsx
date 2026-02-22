@@ -15,7 +15,8 @@ import {
   ChevronLeft,
   Trophy,
   Library,
-  Info
+  Info,
+  School
 } from 'lucide-react';
 
 import html2canvas from 'html2canvas';
@@ -88,7 +89,7 @@ export default function App() {
       });
       
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-      pdf.save(`biblioteksresan-${schoolName || 'skola'}.pdf`);
+      pdf.save(`skolbiblioteksresan-${schoolName || 'skola'}.pdf`);
     }
   };
 
@@ -102,7 +103,7 @@ export default function App() {
 
   const getRoleTitle = (r: Role) => {
     switch (r) {
-      case 'librarian': return 'Bibliotekariens roll';
+      case 'librarian': return 'Skolbibliotekariens roll';
       case 'teacher': return 'Lärarens samverkan';
       case 'principal': return 'Rektorns ledarskap';
     }
@@ -126,18 +127,28 @@ export default function App() {
               <BookOpen className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">Biblioteksresan</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900">Skolbiblioteksresan</h1>
               <p className="text-sm text-slate-500 font-medium">Hur långt har vi kommit?</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <input 
-              type="text" 
-              placeholder="Skolans namn..." 
-              value={schoolName}
-              onChange={(e) => setSchoolName(e.target.value)}
-              className="bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
-            />
+          <div className="flex flex-col items-end gap-1">
+            <label htmlFor="school-name" className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 mr-4">
+              Ange skolans namn
+            </label>
+            <div className="relative group">
+              <School className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+              <input 
+                id="school-name"
+                type="text" 
+                placeholder="Skriv här..." 
+                value={schoolName}
+                onChange={(e) => setSchoolName(e.target.value)}
+                className={cn(
+                  "bg-slate-100 border-2 border-transparent rounded-full pl-10 pr-6 py-2.5 text-sm focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none w-full md:w-72 transition-all",
+                  !schoolName && "animate-pulse border-indigo-200 shadow-sm shadow-indigo-100"
+                )}
+              />
+            </div>
           </div>
         </div>
       </header>
@@ -239,7 +250,7 @@ export default function App() {
                   <div className="bg-emerald-600 p-8 text-white">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-2xl font-bold mb-1">{pillar.title} – Bingo</h2>
+                        <h2 className="text-2xl font-bold mb-1">{pillar.title}</h2>
                         <p className="text-emerald-100 opacity-90">{pillar.question}</p>
                       </div>
                       <div className="flex flex-col items-end gap-2">
@@ -256,7 +267,7 @@ export default function App() {
                             <div className="w-px h-full bg-emerald-900/30" />
                           </div>
                         </div>
-                        <div className="text-[10px] uppercase tracking-widest font-bold opacity-70">Framsteg (fjärdedelar)</div>
+                        <div className="text-[10px] uppercase tracking-widest font-bold opacity-70">Framsteg</div>
                       </div>
                     </div>
                   </div>
@@ -364,7 +375,7 @@ export default function App() {
                   <h3 className="text-3xl font-black mb-2" style={{ color: '#0f172a' }}>
                     {schoolName || 'Skolans namn - fyll i högst upp'}
                   </h3>
-                  <p className="font-bold uppercase tracking-widest text-xs" style={{ color: '#4f46e5' }}>Biblioteksresan Status</p>
+                  <p className="font-bold uppercase tracking-widest text-xs" style={{ color: '#4f46e5' }}>Skolbiblioteksresan Status</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -386,7 +397,7 @@ export default function App() {
                 </div>
 
                 <div className="border-t pt-8" style={{ borderTopColor: '#f1f5f9' }}>
-                  <h4 className="text-center text-sm font-bold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>Skolbibliotekspraktiker (Bingo-framsteg)</h4>
+                  <h4 className="text-center text-sm font-bold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>Skolbibliotekspraktiker (Framsteg)</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {fourPillars.map((p) => (
                       <div key={p.id} className="text-center">
