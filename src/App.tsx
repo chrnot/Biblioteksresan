@@ -170,21 +170,39 @@ export default function App() {
         
         if (acceptedMissions.length > 0) {
           acceptedMissions.forEach((m: any) => {
-            const goalText = `Mål: ${m.text}`;
+            const cleanText = m.text.replace(/\s+/g, ' ').trim();
+            const goalText = `Mål: ${cleanText}`;
             const splitText = pdf.splitTextToSize(goalText, pageWidth - 40);
-            pdf.text(splitText, 25, yPos);
-            yPos += (splitText.length * 5) + 2;
+            
+            // Check for page overflow
+            if (yPos + (splitText.length * 5) > pageHeight - 40) {
+              pdf.addPage();
+              yPos = 20;
+            }
+
+            splitText.forEach((line: string) => {
+              pdf.text(line.trim(), 25, yPos);
+              yPos += 5;
+            });
+            yPos += 2; // Extra space between items
           });
         } else {
           pdf.text('Inga prioriterade mål valda ännu.', 25, yPos);
           yPos += 10;
         }
 
-        yPos += 10;
+        yPos += 5;
 
         // Rekommendationer
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(12);
+        
+        // Check for page overflow before header
+        if (yPos > pageHeight - 40) {
+          pdf.addPage();
+          yPos = 20;
+        }
+        
         pdf.text('Rekommenderade nästa steg (baserat på nuläge)', 20, yPos);
         yPos += 10;
 
@@ -209,10 +227,21 @@ export default function App() {
         
         if (selectedRecs.length > 0) {
           selectedRecs.forEach((r: any) => {
-            const recText = `• ${r.text}`;
+            const cleanText = r.text.replace(/\s+/g, ' ').trim();
+            const recText = `• ${cleanText}`;
             const splitText = pdf.splitTextToSize(recText, pageWidth - 45);
-            pdf.text(splitText, 25, yPos);
-            yPos += (splitText.length * 5) + 2;
+            
+            // Check for page overflow
+            if (yPos + (splitText.length * 5) > pageHeight - 40) {
+              pdf.addPage();
+              yPos = 20;
+            }
+
+            splitText.forEach((line: string) => {
+              pdf.text(line.trim(), 25, yPos);
+              yPos += 5;
+            });
+            yPos += 2; // Extra space between items
           });
         } else {
           pdf.text('Fortsätt arbeta enligt nuvarande plan.', 25, yPos);
