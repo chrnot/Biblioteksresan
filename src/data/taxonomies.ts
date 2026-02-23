@@ -30,26 +30,53 @@ export const teacherLevels: TaxonomyLevel[] = [
 ];
 
 export const principalLevels: TaxonomyLevel[] = [
-  { level: 1, title: "Ambivalent inställning", description: "Skolbiblioteket får inget aktivt stöd p.g.a. bristande intresse eller prioriteringar." },
-  { level: 2, title: "Införskaffa kunskap (Nivå 2)", description: "Rektorn börjar förstå skolbibliotekets roll i skolan." },
-  { level: 3, title: "Införskaffa kunskap (Nivå 3)", description: "Rektorn anställer en visionär skolbibliotekarie." },
-  { level: 4, title: "Införskaffa kunskap (Nivå 4)", description: "Rektorn inkluderar skolbibliotekarien i ledningsteamet." },
-  { level: 5, title: "Bygga struktur", description: "Rektorn skapar en organisation där skolbiblioteket är tillgängligt och ställer krav på användning." },
-  { level: 6, title: "Utöva ledarskap (Nivå 6)", description: "Rektorn har en långsiktig ekonomisk plan för skolbiblioteket." },
-  { level: 7, title: "Utöva ledarskap (Nivå 7)", description: "Ser till att skolbibliotekets arbete bidrar till elevernas resultat." },
-  { level: 8, title: "Utvärdera resultat", description: "Rektorn utvärderar systematiskt hur skolbiblioteksverksamheten påverkar elevernas måluppfyllelse." },
+  { level: 1, title: "Kunskap saknas", description: "Skolbiblioteket får inget aktivt stöd." },
+  { level: 2, title: "Börjar tillägna sig kunskap", description: "Rektorn börjar förstå skolbibliotekets roll." },
+  { level: 3, title: "Rekrytering", description: "Rektorn anställer en bibliotekarie." },
+  { level: 4, title: "Planering och organisation", description: "Bibliotekarien inkluderas i arbetslag." },
+  { level: 5, title: "Bygga struktur", description: "Organisation för tillgängligt bibliotek." },
+  { level: 6, title: "Ekonomiskt ledarskap", description: "Långsiktig budget finns." },
+  { level: 7, title: "Pedagogiskt ledarskap", description: "Bibliotekets arbete kopplas till resultat." },
+  { level: 8, title: "SKA‑arbete", description: "Rektor följer upp och utvärderar." },
+  { level: 9, title: "Fortsatt kompetensutveckling", description: "Rektor utvecklar sin kunskap kontinuerligt." },
 ];
 
-export const fourPillars = [
+export interface BingoItem {
+  id: string;
+  text: string;
+  minLevel: number;
+  maxLevel: number;
+}
+
+export interface Pillar {
+  id: string;
+  title: string;
+  question: string;
+  bingoItems: BingoItem[];
+}
+
+export const fourPillars: Pillar[] = [
   { 
     id: "mik", 
     title: "MIK & digital kompetens", 
     question: "Undervisas eleverna systematiskt i medie- och informationskunnighet?",
     bingoItems: [
-      "Källkritik i digitala miljöer", "Förståelse för algoritmer", "AI-läskunnighet", "Upphovsrätt & CC",
-      "Digitalt skapande", "Värdera olika källor", "Integritet på nätet", "Reklam- & medieanalys",
-      "Informationssökning", "Källkritik av bild/video", "Förstå filterbubblor", "Hantera desinformation",
-      "Digital säkerhet", "Källhänvisning", "Medieproduktion", "Kritiskt tänkande"
+      { id: "mik-1", text: "Bibliotekskunskap: söka i katalog, ämnesord & hyllsystem", minLevel: 1, maxLevel: 4 },
+      { id: "mik-2", text: "Källkritik & källtillit i olika medieformat", minLevel: 2, maxLevel: 6 },
+      { id: "mik-3", text: "Nätetik & integritet (självbetjäning, säker delning)", minLevel: 1, maxLevel: 5 },
+      { id: "mik-4", text: "Informationssökning i stadens databaser", minLevel: 3, maxLevel: 7 },
+      { id: "mik-5", text: "Referenshantering & källhänvisning (t.ex. inför gymnasiearbete)", minLevel: 5, maxLevel: 9 },
+      { id: "mik-6", text: "Upphovsrätt & Creative Commons", minLevel: 4, maxLevel: 8 },
+      { id: "mik-7", text: "Faktagranskning av nyheter & källor", minLevel: 3, maxLevel: 7 },
+      { id: "mik-8", text: "AI‑verktyg: möjligheter, begränsningar & källkontroll", minLevel: 6, maxLevel: 9 },
+      { id: "mik-9", text: "Tolka och kritiskt granska diagram & statistik", minLevel: 5, maxLevel: 9 },
+      { id: "mik-10", text: "Digital tillgänglighet: talsyntes, e‑böcker & anpassningar", minLevel: 2, maxLevel: 6 },
+      { id: "mik-11", text: "Säkra lösenord och datasäkerhet i skolarbeten", minLevel: 1, maxLevel: 4 },
+      { id: "mik-12", text: "Planera & genomföra MIK‑pass tillsammans med lärare", minLevel: 7, maxLevel: 9 },
+      { id: "mik-13", text: "Jämföra olika sökstrategier (fria webben vs. databaser)", minLevel: 4, maxLevel: 8 },
+      { id: "mik-14", text: "Bedöma lärresurser och verktyg mot kriterier", minLevel: 6, maxLevel: 9 },
+      { id: "mik-15", text: "Etik vid publicering av elevarbeten", minLevel: 5, maxLevel: 8 },
+      { id: "mik-16", text: "Kritisk bild- och videogranskning", minLevel: 4, maxLevel: 9 }
     ]
   },
   { 
@@ -57,10 +84,22 @@ export const fourPillars = [
     title: "Läsning & språkutveckling", 
     question: "Stödjer skolbiblioteket elevernas språkliga och litterära utveckling?",
     bingoItems: [
-      "Läsfrämjande insatser", "Ordförrådsutveckling", "Boksamtal i grupp", "Skrivande i genrer",
-      "Berättande (storytelling)", "Modersmålsstöd", "Litteratur på olika språk", "Högläsning",
-      "Lässtrategier", "Multimodalitet (bild/text)", "Genremedvetenhet", "Språklig medvetenhet",
-      "Lustfyllt läsande", "Skönlitteratur i ämnen", "Poesi och dramatik", "Digitalt berättande"
+      { id: "read-1", text: "Bokpresentationer & individuell litteraturvägledning", minLevel: 1, maxLevel: 5 },
+      { id: "read-2", text: "Högläsning & boksamtal i undervisningen", minLevel: 2, maxLevel: 6 },
+      { id: "read-3", text: "Läsprojekt & läsfrämjande aktiviteter (även lov/sommar)", minLevel: 3, maxLevel: 7 },
+      { id: "read-4", text: "Läslogg, reflektion & måluppföljning", minLevel: 4, maxLevel: 8 },
+      { id: "read-5", text: "Genrekunskap: berättande & faktatexter", minLevel: 2, maxLevel: 5 },
+      { id: "read-6", text: "Ordförråd & begreppsarbete i ämnesstudier", minLevel: 4, maxLevel: 7 },
+      { id: "read-7", text: "Strategier för fackläsning i NO/SO", minLevel: 5, maxLevel: 8 },
+      { id: "read-8", text: "SVA‑stöd & flerspråkiga resurser", minLevel: 3, maxLevel: 7 },
+      { id: "read-9", text: "Läsning på modersmål (Mångspråksbiblioteket)", minLevel: 4, maxLevel: 8 },
+      { id: "read-10", text: "Tillgänglig läsning: talböcker, lättläst & punktskrift", minLevel: 2, maxLevel: 6 },
+      { id: "read-11", text: "Samarbeta med Cirkulationsbiblioteket (klassuppsättningar)", minLevel: 1, maxLevel: 4 },
+      { id: "read-12", text: "Skriva recension/essä med citatstöd", minLevel: 5, maxLevel: 9 },
+      { id: "read-13", text: "Kamratrespons & samtalsmodeller (t.ex. två stjärnor och en önskan)", minLevel: 4, maxLevel: 7 },
+      { id: "read-14", text: "Läsutmaningar & biblioteksaktiviteter efter skoltid", minLevel: 3, maxLevel: 6 },
+      { id: "read-15", text: "Läsning på originalspråk/översättning", minLevel: 6, maxLevel: 9 },
+      { id: "read-16", text: "Uppföljning i SKA av läsfrämjande insatser", minLevel: 7, maxLevel: 9 }
     ]
   },
   { 
@@ -68,10 +107,22 @@ export const fourPillars = [
     title: "Litteratur & kultur", 
     question: "Erbjuder skolbiblioteket ett brett utbud av kultur och litteratur?",
     bingoItems: [
-      "Bokprat & bokattacker", "Aktuellt bokbestånd", "Författarbesök", "Kulturella events",
-      "Skyltning & exponering", "Samarbete med kulturskola", "Film & media", "Konstutställningar",
-      "Elevinflytande vid inköp", "Mångfald i utbudet", "Litteraturkanon-diskussion", "Kulturarv & samtid",
-      "Skapande verksamhet", "Teater & drama", "Musik & ljud", "Globala perspektiv"
+      { id: "cult-1", text: "Samtida ungdomslitteratur & klassiker", minLevel: 1, maxLevel: 5 },
+      { id: "cult-2", text: "Författarporträtt & litterära epoker", minLevel: 3, maxLevel: 7 },
+      { id: "cult-3", text: "Poesi, novell & dramatik – läsa & skapa", minLevel: 4, maxLevel: 8 },
+      { id: "cult-4", text: "Jämföra bok och filmatisering", minLevel: 2, maxLevel: 6 },
+      { id: "cult-5", text: "Litteratur & kulturarv (inkl. nationella minoriteter)", minLevel: 4, maxLevel: 8 },
+      { id: "cult-6", text: "Temaarbete: ett tema i flera verk/medier", minLevel: 5, maxLevel: 9 },
+      { id: "cult-7", text: "Kreativt skrivande i en författares stil", minLevel: 6, maxLevel: 9 },
+      { id: "cult-8", text: "Tolkning med citat och textbevis", minLevel: 5, maxLevel: 8 },
+      { id: "cult-9", text: "Elevutställning/skyltning som synliggör mångfald", minLevel: 2, maxLevel: 5 },
+      { id: "cult-10", text: "Litteratur på flera språk & översättning", minLevel: 4, maxLevel: 7 },
+      { id: "cult-11", text: "Samarbete med folkbibliotek/kulturaktörer", minLevel: 3, maxLevel: 6 },
+      { id: "cult-12", text: "Recensionscirkel eller podd", minLevel: 5, maxLevel: 8 },
+      { id: "cult-13", text: "Affisch/utställning om bibliotekets medieplan (inköp & gallring)", minLevel: 2, maxLevel: 4 },
+      { id: "cult-14", text: "Lyfta fram tillgängliga format & läsfrämjande miljö", minLevel: 1, maxLevel: 4 },
+      { id: "cult-15", text: "Elevkurator för kultur: planera en läs/skriv‑händelse", minLevel: 7, maxLevel: 9 },
+      { id: "cult-16", text: "Biblioteksvandring med fokus på trygg & ändamålsenlig miljö", minLevel: 1, maxLevel: 3 }
     ]
   },
   { 
@@ -79,10 +130,22 @@ export const fourPillars = [
     title: "Demokrati & värdegrund", 
     question: "Fungerar skolbiblioteket som en demokratisk arena för alla elever?",
     bingoItems: [
-      "Elevinflytande i bibblan", "Samtal om svåra frågor", "Yttrandefrihet & censur", "Inkludering & mångfald",
-      "Delaktighet i inköp", "Skolbiblioteket som mötesplats", "Kritiskt granskande av makt", "Mänskliga rättigheter",
-      "Demokratiska processer", "Trygg miljö för alla", "Representation i hyllan", "Medborgarfostran",
-      "Etiska diskussioner", "Tillgång till fri info", "Globala målen i bibblan", "Elevrådssamarbete"
+      { id: "demo-1", text: "Fri åsiktsbildning & saklig debatt med källstöd", minLevel: 5, maxLevel: 9 },
+      { id: "demo-2", text: "Publicistiska principer & pressetik", minLevel: 6, maxLevel: 9 },
+      { id: "demo-3", text: "Yttrandefrihet & ansvar på nätet", minLevel: 3, maxLevel: 7 },
+      { id: "demo-4", text: "Källkritik i samhällsfrågor/val", minLevel: 4, maxLevel: 8 },
+      { id: "demo-5", text: "Biblioteksråd & elevinflytande i verksamheten", minLevel: 2, maxLevel: 6 },
+      { id: "demo-6", text: "Representation & likvärdig tillgång (mångfald i hyllorna)", minLevel: 1, maxLevel: 5 },
+      { id: "demo-7", text: "Förebygga och hantera näthat", minLevel: 3, maxLevel: 7 },
+      { id: "demo-8", text: "Propaganda & retoriska grepp i media", minLevel: 6, maxLevel: 9 },
+      { id: "demo-9", text: "Medborgarpåverkan: insändare/förslag", minLevel: 5, maxLevel: 8 },
+      { id: "demo-10", text: "Granska bild och rörlig bild", minLevel: 4, maxLevel: 7 },
+      { id: "demo-11", text: "Barnkonventionen i skolan – koppling till bibliotek", minLevel: 2, maxLevel: 5 },
+      { id: "demo-12", text: "Etiska dilemman och värderingsövningar", minLevel: 4, maxLevel: 8 },
+      { id: "demo-13", text: "Tillgänglig miljö: fysisk & kognitiv tillgänglighet", minLevel: 1, maxLevel: 4 },
+      { id: "demo-14", text: "Fokusinsatser för prioriterade grupper", minLevel: 3, maxLevel: 6 },
+      { id: "demo-15", text: "Kritiskt granska diagram i debatt", minLevel: 7, maxLevel: 9 },
+      { id: "demo-16", text: "SKA‑uppföljning av elevers delaktighet", minLevel: 7, maxLevel: 9 }
     ]
   },
 ];

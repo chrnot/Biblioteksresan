@@ -16,7 +16,9 @@ import {
   Trophy,
   Library,
   Info,
-  School
+  School,
+  Sparkles,
+  Map
 } from 'lucide-react';
 
 import html2canvas from 'html2canvas';
@@ -30,6 +32,7 @@ import {
   fourPillars,
   TaxonomyLevel 
 } from './data/taxonomies';
+import { ActionPlan } from './components/ActionPlan';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -41,6 +44,7 @@ type PillarId = 'mik' | 'reading' | 'culture' | 'democracy';
 export default function App() {
   const [role, setRole] = useState<Role | null>(null);
   const [activePillar, setActivePillar] = useState<PillarId | null>(null);
+  const [view, setView] = useState<'overview' | 'action-plan'>('overview');
   const [scores, setScores] = useState<Record<Role, number>>({
     librarian: 0,
     teacher: 0,
@@ -53,7 +57,42 @@ export default function App() {
     democracy: new Array(16).fill(false)
   });
   const [schoolName, setSchoolName] = useState('');
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [nyckeltal, setNyckeltal] = useState({
+    elever: '',
+    planering: '',
+    utlan: ''
+  });
   const exportRef = useRef<HTMLDivElement>(null);
+
+  // Persistence
+  React.useEffect(() => {
+    const savedScores = localStorage.getItem('scores');
+    const savedBingo = localStorage.getItem('bingoStates');
+    const savedName = localStorage.getItem('schoolName');
+    const savedNyckeltal = localStorage.getItem('nyckeltal');
+
+    if (savedScores) setScores(JSON.parse(savedScores));
+    if (savedBingo) setBingoStates(JSON.parse(savedBingo));
+    if (savedName) setSchoolName(savedName);
+    if (savedNyckeltal) setNyckeltal(JSON.parse(savedNyckeltal));
+  }, []);
+
+  React.useEffect(() => {
+    localStorage.setItem('scores', JSON.stringify(scores));
+  }, [scores]);
+
+  React.useEffect(() => {
+    localStorage.setItem('bingoStates', JSON.stringify(bingoStates));
+  }, [bingoStates]);
+
+  React.useEffect(() => {
+    localStorage.setItem('schoolName', schoolName);
+  }, [schoolName]);
+
+  React.useEffect(() => {
+    localStorage.setItem('nyckeltal', JSON.stringify(nyckeltal));
+  }, [nyckeltal]);
 
   const handleLevelClick = (role: Role, level: number) => {
     setScores(prev => ({ ...prev, [role]: level }));
@@ -74,22 +113,129 @@ export default function App() {
 
   const downloadPDF = async () => {
     if (exportRef.current) {
-      const canvas = await html2canvas(exportRef.current, {
-        scale: 2,
-        backgroundColor: '#f8fafc',
-        logging: false,
-        useCORS: true
-      });
-      
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height]
-      });
-      
-      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-      pdf.save(`skolbiblioteksresan-${schoolName || 'skola'}.pdf`);
+      setIsGeneratingPDF(true);
+      try {
+        const canvas = await html2canvas(exportRef.current, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          logging: false,
+          useCORS: true
+        });
+        
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        
+        // Page 1: Dashboard
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(18);
+        pdf.text(`Nulägesanalys - ${schoolName || 'Skola'}`, 20, 20);
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text(`Datum: ${new Date().toLocaleDateString('sv-SE')}`, 20, 27);
+
+        const imgWidth = pageWidth - 40;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'JPEG', 20, 35, imgWidth, imgHeight);
+
+        // Page 2: Action Plan
+        pdf.addPage();
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(18);
+        pdf.text(`Handlingsplan för skolbiblioteksutveckling`, 20, 20);
+        pdf.setFontSize(14);
+        pdf.text(schoolName || '', 20, 28);
+
+        let yPos = 45;
+
+        // Get data from localStorage
+        const savedAccepted = localStorage.getItem('acceptedMissions');
+        const acceptedMissions = savedAccepted ? JSON.parse(savedAccepted) : [];
+
+        // Prioriterade mål
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Prioriterade mål för läsåret', 20, yPos);
+        yPos += 10;
+        
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+        
+        if (acceptedMissions.length > 0) {
+          acceptedMissions.forEach((m: any) => {
+            const goalText = `Mål: ${m.text}`;
+            const splitText = pdf.splitTextToSize(goalText, pageWidth - 40);
+            pdf.text(splitText, 25, yPos);
+            yPos += (splitText.length * 5) + 2;
+          });
+        } else {
+          pdf.text('Inga prioriterade mål valda ännu.', 25, yPos);
+          yPos += 10;
+        }
+
+        yPos += 10;
+
+        // Rekommendationer
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(12);
+        pdf.text('Rekommenderade nästa steg (baserat på nuläge)', 20, yPos);
+        yPos += 10;
+
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+
+        const recommendations: any[] = [];
+        fourPillars.forEach(pillar => {
+          pillar.bingoItems.forEach((item, idx) => {
+            const isChecked = bingoStates[pillar.id as PillarId][idx];
+            const isAccepted = acceptedMissions.some((m: any) => m.id === item.id);
+            if (!isChecked && !isAccepted) {
+              const currentLevel = scores.principal || 1;
+              if (currentLevel >= item.minLevel && currentLevel <= item.maxLevel) {
+                recommendations.push(item);
+              }
+            }
+          });
+        });
+
+        const selectedRecs = recommendations.sort(() => Math.random() - 0.5).slice(0, 3);
+        
+        if (selectedRecs.length > 0) {
+          selectedRecs.forEach((r: any) => {
+            const recText = `• ${r.text}`;
+            const splitText = pdf.splitTextToSize(recText, pageWidth - 45);
+            pdf.text(splitText, 25, yPos);
+            yPos += (splitText.length * 5) + 2;
+          });
+        } else {
+          pdf.text('Fortsätt arbeta enligt nuvarande plan.', 25, yPos);
+          yPos += 10;
+        }
+
+        // Resource notice
+        const eleverPerBibl = parseInt(nyckeltal.elever);
+        if (!isNaN(eleverPerBibl) && eleverPerBibl > 400) {
+          pdf.setFont('helvetica', 'italic');
+          pdf.setFontSize(9);
+          pdf.setTextColor(150, 0, 0);
+          const notice = `OBS: Antal elever per skolbibliotekarie (${eleverPerBibl}) överstiger rekommenderade nivåer. För att möjliggöra det pedagogiska uppdraget och likvärdighet rekommenderas en översyn av bemanningstätheten.`;
+          const splitNotice = pdf.splitTextToSize(notice, pageWidth - 40);
+          pdf.text(splitNotice, 20, pageHeight - 30);
+        }
+
+        pdf.save(`skolbiblioteksrapport-${schoolName || 'skola'}.pdf`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+      } finally {
+        setIsGeneratingPDF(false);
+      }
     }
   };
 
@@ -105,7 +251,7 @@ export default function App() {
     switch (r) {
       case 'librarian': return 'Skolbibliotekariens roll';
       case 'teacher': return 'Lärarens samverkan';
-      case 'principal': return 'Rektorns ledarskap';
+      case 'principal': return 'Rektors ansvar – hur långt har ledningen kommit?';
     }
   };
 
@@ -131,6 +277,30 @@ export default function App() {
               <p className="text-sm text-slate-500 font-medium">Hur långt har vi kommit?</p>
             </div>
           </div>
+
+          {!role && !activePillar && (
+            <nav className="flex bg-slate-100 p-1 rounded-xl">
+              <button
+                onClick={() => setView('overview')}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                  view === 'overview' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <Map className="w-4 h-4" /> Översikt
+              </button>
+              <button
+                onClick={() => setView('action-plan')}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                  view === 'action-plan' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <Sparkles className="w-4 h-4" /> Vägen framåt
+              </button>
+            </nav>
+          )}
+
           <div className="flex flex-col items-end gap-1">
             <label htmlFor="school-name" className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 mr-4">
               Ange skolans namn
@@ -154,28 +324,79 @@ export default function App() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-8">
-        {/* Role Selection */}
-        {!role && !activePillar ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            {(['librarian', 'teacher', 'principal'] as Role[]).map((r) => (
-              <motion.button
-                key={r}
-                whileHover={{ y: -5 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setRole(r)}
-                className="bg-white p-8 rounded-3xl shadow-md border border-slate-100 flex flex-col items-center text-center gap-4 transition-all hover:shadow-xl hover:border-indigo-100"
-              >
-                <div className="bg-indigo-50 p-4 rounded-2xl text-indigo-600">
-                  {getRoleIcon(r)}
+        {view === 'action-plan' && !role && !activePillar ? (
+          <ActionPlan 
+            principalLevel={scores.principal} 
+            bingoStates={bingoStates} 
+          />
+        ) : !role && !activePillar ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              {(['librarian', 'teacher', 'principal'] as Role[]).map((r) => (
+                <motion.button
+                  key={r}
+                  whileHover={{ y: -5 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setRole(r)}
+                  className="bg-white p-8 rounded-3xl shadow-md border border-slate-100 flex flex-col items-center text-center gap-4 transition-all hover:shadow-xl hover:border-indigo-100"
+                >
+                  <div className="bg-indigo-50 p-4 rounded-2xl text-indigo-600">
+                    {getRoleIcon(r)}
+                  </div>
+                  <h3 className="text-xl font-bold">{getRoleTitle(r)}</h3>
+                  <div className="mt-4 flex items-center text-indigo-600 font-semibold text-sm">
+                    Börja resan <ChevronRight className="w-4 h-4 ml-1" />
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+
+            {/* Nyckeltal Section */}
+            <section className="mt-16 border-t border-slate-200 pt-16">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="bg-indigo-100 p-2 rounded-lg text-indigo-600">
+                  <Info className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold">{getRoleTitle(r)}</h3>
-                <p className="text-sm text-slate-500">Baserat på Loertschers taxonomi.</p>
-                <div className="mt-4 flex items-center text-indigo-600 font-semibold text-sm">
-                  Börja resan <ChevronRight className="w-4 h-4 ml-1" />
+                <h2 className="text-2xl font-bold tracking-tight">Nyckeltal</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700">Antal elever per skolbibliotekarie</label>
+                  <input 
+                    type="text" 
+                    inputMode="numeric"
+                    value={nyckeltal.elever}
+                    onChange={(e) => setNyckeltal(prev => ({ ...prev, elever: e.target.value }))}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                    placeholder="Ange antal..."
+                  />
                 </div>
-              </motion.button>
-            ))}
-          </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700">Timmar/vecka avsatt för planering</label>
+                  <input 
+                    type="text" 
+                    inputMode="decimal"
+                    value={nyckeltal.planering}
+                    onChange={(e) => setNyckeltal(prev => ({ ...prev, planering: e.target.value }))}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                    placeholder="Ange timmar..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700">Utlån 15 sep – 15 okt</label>
+                  <input 
+                    type="text" 
+                    inputMode="numeric"
+                    value={nyckeltal.utlan}
+                    onChange={(e) => setNyckeltal(prev => ({ ...prev, utlan: e.target.value }))}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                    placeholder="Ange antal utlån..."
+                  />
+                </div>
+              </div>
+            </section>
+          </>
         ) : role ? (
           <div className="space-y-8">
             <button 
@@ -274,7 +495,7 @@ export default function App() {
 
                   <div className="p-4 md:p-8 bg-slate-50">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {pillar.bingoItems?.map((text, idx) => (
+                      {pillar.bingoItems?.map((item, idx) => (
                         <motion.div
                           key={idx}
                           whileTap={{ scale: 0.95 }}
@@ -286,7 +507,7 @@ export default function App() {
                               : "bg-white border-slate-200 text-slate-600 hover:border-emerald-300"
                           )}
                         >
-                          {text}
+                          {item.text}
                         </motion.div>
                       ))}
                     </div>
@@ -306,6 +527,12 @@ export default function App() {
               </div>
               <h2 className="text-2xl font-bold tracking-tight">Skolbibliotekspraktiker</h2>
             </div>
+            <p className="text-slate-500 text-sm mb-8 max-w-2xl">
+              Under läsåret får elever vara delaktiga i olika lektioner och aktiviteter. Tillfällena är antingen planerade, genomförda och utvärderade:
+              <br />• av skolbibliotekarien och lärare eller annan pedagogisk personal tillsammans
+              <br />• av skolbibliotekarien tillsammans med en eller flera andra skolbibliotekarier
+              <br />• av en enskild skolbibliotekarie
+            </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {fourPillars.map((pillar) => (
@@ -350,22 +577,45 @@ export default function App() {
 
         {/* Summary / Export Area */}
         {!role && !activePillar && (
-          <section className="mt-20">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold tracking-tight">Skolbibliotekets nuläge</h2>
+          <section className="mt-20 border-t border-slate-200 pt-16">
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="bg-indigo-50 p-4 rounded-full text-indigo-600">
+                <Download className="w-8 h-8" />
+              </div>
+              <div className="max-w-md">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Färdig med din analys?</h3>
+                <p className="text-slate-500 text-sm">
+                  Generera en professionell PDF-rapport som kan användas som underlag för SKA-arbete, budgetmöten och ledningsgrupper.
+                </p>
+              </div>
+              
               <button 
                 onClick={downloadPDF}
-                className="flex items-center gap-2 bg-white border border-slate-200 rounded-full px-6 py-2.5 text-sm font-bold shadow-sm hover:shadow-md transition-all active:scale-95"
+                disabled={isGeneratingPDF}
+                className={cn(
+                  "flex items-center gap-3 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed",
+                  isGeneratingPDF && "animate-pulse"
+                )}
               >
-                <Download className="w-4 h-4" /> Exportera PDF
+                {isGeneratingPDF ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Skapar rapport...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5" /> Generera PDF-rapport för ledningen
+                  </>
+                )}
               </button>
             </div>
 
-            <div 
-              ref={exportRef}
-              className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 relative overflow-hidden"
-              style={{ backgroundColor: '#ffffff', color: '#0f172a' }}
-            >
+            <div className="mt-16 opacity-0 pointer-events-none h-0 overflow-hidden">
+              <div 
+                ref={exportRef}
+                className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 relative overflow-hidden"
+                style={{ backgroundColor: '#ffffff', color: '#0f172a', width: '800px' }}
+              >
               {/* Background Decorative Elements */}
               <div className="absolute top-0 right-0 w-64 h-64 rounded-full -mr-32 -mt-32 opacity-50" style={{ backgroundColor: '#eef2ff' }} />
               <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full -ml-24 -mb-24 opacity-50" style={{ backgroundColor: '#ecfdf5' }} />
@@ -387,7 +637,7 @@ export default function App() {
                       <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#e2e8f0' }}>
                         <motion.div 
                           initial={{ width: 0 }}
-                          animate={{ width: `${(scores[r] / (r === 'librarian' ? 11 : 8)) * 100}%` }}
+                          animate={{ width: `${(scores[r] / (r === 'librarian' ? 11 : r === 'principal' ? 9 : 8)) * 100}%` }}
                           className="h-full"
                           style={{ backgroundColor: '#4f46e5' }}
                         />
@@ -422,6 +672,25 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Nyckeltal in Export */}
+                <div className="mt-12 border-t pt-8" style={{ borderTopColor: '#f1f5f9' }}>
+                  <h4 className="text-center text-sm font-bold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>Nyckeltal</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-xl font-black" style={{ color: '#0f172a' }}>{nyckeltal.elever || '—'}</div>
+                      <div className="text-[9px] font-bold uppercase leading-tight" style={{ color: '#94a3b8' }}>Elever / bibl.</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-black" style={{ color: '#0f172a' }}>{nyckeltal.planering || '—'}</div>
+                      <div className="text-[9px] font-bold uppercase leading-tight" style={{ color: '#94a3b8' }}>Planering (h/v)</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-black" style={{ color: '#0f172a' }}>{nyckeltal.utlan || '—'}</div>
+                      <div className="text-[9px] font-bold uppercase leading-tight" style={{ color: '#94a3b8' }}>Utlån (period)</div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="mt-12 text-center">
                   <div className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-tighter" style={{ color: '#94a3b8' }}>
                     <Info className="w-3 h-3" /> Baserat på David Loertschers taxonomier för skolbibliotek
@@ -429,6 +698,7 @@ export default function App() {
                 </div>
               </div>
             </div>
+          </div>
           </section>
         )}
       </main>
